@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bixbyGT’s Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0b0c10 0%, #150926 50%, #0b0c10 100%);
+            color: #c5c6c7;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            /* Hides default cursor across desktop platforms */
+            cursor: none; 
+        }
+
+        /* HIGH-PRIORITY CANVAS OVERLAY: Absolute top-layer visibility rendering over all panels */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @keyframes pageSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .profile-link-wrapper, .tutorial-placeholder-box, .main-mod-panel {
+            animation: pageSlideUp 0.6s ease-out forwards;
+        }
+
+        .profile-link-wrapper {
+            text-decoration: none;
+            display: block;
+            cursor: none;
+            transition: transform 0.2s ease;
+        }
+        .profile-link-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        .profile-container {
+            text-align: center;
+            margin-bottom: 25px;
+            margin-top: 40px;
+        }
+
+        .profile-pic {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #66fcf1;
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.6), 
+                        0 0 35px rgba(188, 19, 254, 0.4),
+                        0 0 60px rgba(255, 69, 0, 0.5);
+        }
+
+        h1 {
+            color: #ffffff;
+            margin: 15px 0 5px 0;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        .subtitle {
+            color: #66fcf1;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .tutorial-placeholder-box {
+            width: 100%;
+            max-width: 550px;
+            height: 310px;
+            background: rgba(15, 8, 28, 0.75);
+            border: 2px dashed #bc13fe;
+            box-shadow: 0 0 25px rgba(188, 19, 254, 0.25);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @keyframes neonPulse {
+            0% { text-shadow: 0 0 10px rgba(102, 252, 241, 0.4); opacity: 0.6; }
+            50% { text-shadow: 0 0 25px rgba(102, 252, 241, 0.9), 0 0 40px #66fcf1; opacity: 1; }
+            100% { text-shadow: 0 0 10px rgba(102, 252, 241, 0.4); opacity: 0.6; }
+        }
+        .placeholder-icon {
+            font-size: 4rem;
+            color: #66fcf1;
+            margin-bottom: 10px;
+            animation: neonPulse 2s infinite ease-in-out;
+            font-weight: 800;
+        }
+        .placeholder-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 5px 0;
+        }
+        .placeholder-desc {
+            font-size: 1.05rem;
+            color: #a5a6a7;
+            max-width: 450px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .main-mod-panel {
+            width: 100%;
+            max-width: 550px;
+            background: #11141a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px 25px;
+            box-sizing: border-box;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .panel-title {
+            color: #ffffff;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accent-bar {
+            width: 100%;
+            height: 2px;
+            background: #66fcf1;
+            margin-bottom: 20px;
+            box-shadow: 0 0 8px rgba(102, 252, 241, 0.5);
+        }
+
+        .panel-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #a5a6a7;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background: linear-gradient(90deg, #b000ff 0%, #ff5500 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 800;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(176, 0, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; 
+        }
+        .action-btn:last-child {
+            margin-bottom: 0;
+        }
+        .action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(255, 85, 0, 0.5);
+            border-color: #66fcf1;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <a href="https://youtube.com" class="profile-link-wrapper" target="_blank" rel="noopener noreferrer">
+        <div class="profile-container">
+            <img src="IMG_2071.jpeg" alt="bixbyGT" class="profile-pic">
+            <h1>bixbyGT's Hub</h1>
+            <div class="subtitle">VR Creator & Modder</div>
+        </div>
+    </a>
+
+    <div class="tutorial-placeholder-box">
+        <div class="placeholder-icon">?</div>
+        <h2 class="placeholder-title">Stay Tuned for Tutorial!</h2>
+        <p class="placeholder-desc">The mod menu video guide is currently rendering. Check back soon for the complete walkthrough installation drop!</p>
+    </div>
+
+    <div class="main-mod-panel">
+        <div class="panel-title">🛠️ Stripes Standalone Mod Menu</div>
+        <div class="accent-bar"></div>
+        <p class="panel-desc">Download the required package files and core application environments to download and run custom VR mod menus on your device without a PC.</p>
+
+        <!-- META QUEST STORE LINK -->
+        <a href="https://meta.com" class="action-btn" target="_blank" rel="noopener noreferrer">
+            ⚡ Lightning Launcher
+        </a>
+
+        <!-- LOCAL SITE DETECTOR LINK: Configured to download purely inside your own website domain -->
+        <a href="./files/StripesADB.apk" class="action-btn" download="StripesADB.apk">
+            🎮 Mod Menu Download
+        </a>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let particles = [];
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 4 + 2;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * -2 - 0.5; 
+                this.color = Math.random() > 0.4 ? '#66fcf1' : '#bc13fe'; 
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.015;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+                if (this.size > 0.1) this.size -= 0.05;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        let mouseX = -100;
+        let mouseY = -100;
+
+        function spawnParticles(x, y) {
+            for (let i = 0; i < 2; i++) {
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        // UNIVERSAL POINTER EVENTS: Replaced old mouse tracking with a unified system for VR laser rays and touch
+        window.addEventListener('pointermove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            spawnParticles(mouseX, mouseY);
+        });
+
+        window.addEventListener('pointerdown', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            spawnParticles(mouseX, mouseY);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            spawnParticles(mouseX, mouseY);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if(e.touches && e.touches.length > 0) {
+                mouseX = e.touches[0].clientX;
